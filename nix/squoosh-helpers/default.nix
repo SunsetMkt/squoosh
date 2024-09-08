@@ -11,18 +11,18 @@ in
 {
   inherit suffixAttrNames;
 
-  mkInstallable =
+  mkRepoBinaryUpdater =
     flake:
     let
-      installScript = writeShellScriptBin "install.sh" ''
+      script = writeShellScriptBin "updateRepoBinaries.sh" ''
         ${coreutils}/bin/mkdir -p wasm_build
         ${rsync}/bin/rsync --chmod=u+w -r ${flake.packages.default}/* wasm_build/
       '';
     in
     lib.recursiveUpdate flake {
-      apps.install = {
+      apps.updateRepoBinaries = {
         type = "app";
-        program = "${installScript}/bin/install.sh";
+        program = "${script}/bin/updateRepoBinaries.sh";
       };
     };
 

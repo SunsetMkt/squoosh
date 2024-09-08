@@ -20,14 +20,16 @@
         buildSquooshRustCodec = callPackage (import ../../nix/squoosh-rust-builder) {
           fenix = fenix.packages.${system};
         };
-        mkInstallable = callPackage (import ../../nix/mk-installable) { };
+        squooshHelpers = callPackage (import ../../nix/squoosh-helpers) { };
+        inherit (squooshHelpers) mkRepoBinaryUpdater;
 
         src = lib.sources.sourceByRegex ./. [
-          "Makefile"
-          "enc(/.+)?"
+          "Cargo.*"
+          ".*\.rs"
+          "src"
         ];
       in
-      mkInstallable {
+      mkRepoBinaryUpdater {
         packages = rec {
           default = resize-squoosh;
           resize-squoosh = buildSquooshRustCodec {

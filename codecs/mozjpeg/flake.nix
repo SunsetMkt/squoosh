@@ -22,7 +22,7 @@
 
         buildSquooshCppCodec = callPackage (import ../../nix/squoosh-cxx-builder) { };
         squooshHelpers = callPackage (import ../../nix/squoosh-helpers) { };
-        inherit (squooshHelpers) mkInstallable forAllVariants;
+        inherit (squooshHelpers) forAllVariants mkRepoBinaryUpdater;
 
         variants = {
           base = { };
@@ -81,7 +81,7 @@
         packageVariants = forAllVariants { inherit builder variants; };
       in
 
-      mkInstallable {
+      mkRepoBinaryUpdater {
         packages = packageVariants // {
           default = packageVariants."mozjpeg-squoosh-base";
         };

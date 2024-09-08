@@ -21,7 +21,7 @@
         inherit (pkgs) lib stdenv callPackage;
         buildSquooshCppCodec = callPackage (import ../../nix/squoosh-cxx-builder) { };
         squooshHelpers = callPackage (import ../../nix/squoosh-helpers) { };
-        inherit (squooshHelpers) mkInstallable forAllVariants;
+        inherit (squooshHelpers) forAllVariants mkRepoBinaryUpdater;
 
         variants = {
           base = {
@@ -119,7 +119,7 @@
           };
       in
 
-      mkInstallable {
+      mkRepoBinaryUpdater {
         packages = packageVariants // {
           default = defaultPackage;
         };
