@@ -21,17 +21,19 @@
           fenix = fenix.packages.${system};
         };
         squooshHelpers = callPackage (import ../../nix/squoosh-helpers) { };
-        inherit (squooshHelpers) mkRepoBinaryUpdater;
+        inherit (squooshHelpers) mkRepoBinaryUpdater forAllVariants;
+
+        variants = {
+          base = { };
+        };
 
         src = lib.sources.sourceByRegex ./. [
           "Cargo.*"
-          ".*\.rs"
-          "src"
+          "build\.rs"
+          "src(/.+)?"
         ];
-      in
-      mkRepoBinaryUpdater {
-        packages = rec {
-          default = resize-squoosh;
+
+        builder = variantName: opts: {
           resize-squoosh = buildSquooshRustCodec {
             name = "resize-squoosh";
             inherit src;
@@ -42,6 +44,13 @@
               sha256 = "sha256-HTElSB76gqCpDu8S0ZJlfd/S4ftMrbwxFgJM9OXBRz8=";
             };
           };
+        };
+
+        packageVariants = forAllVariants { inherit builder variants; };
+      in
+      mkRepoBinaryUpdater {
+        packages = packageVariants // {
+          default = packageVariants."resize-squoosh-base";
         };
       }
     );

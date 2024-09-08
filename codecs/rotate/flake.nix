@@ -21,16 +21,18 @@
           fenix = fenix.packages.${system};
         };
         squooshHelpers = callPackage (import ../../nix/squoosh-helpers) { };
-        inherit (squooshHelpers) mkRepoBinaryUpdater;
+        inherit (squooshHelpers) mkRepoBinaryUpdater forAllVariants;
+
+        variants = {
+          base = { };
+        };
 
         src = lib.sources.sourceByRegex ./. [
           "Cargo\.*"
           ".*\.rs"
         ];
-      in
-      mkRepoBinaryUpdater {
-        packages = rec {
-          default = rotate-squoosh;
+
+        builder = variantName: opts: {
           rotate-squoosh = buildSquooshRustCodec {
             name = "rotate-squoosh";
             inherit src;
@@ -39,6 +41,13 @@
             };
             wasmBindgen = null;
           };
+        };
+
+        packageVariants = forAllVariants { inherit builder variants; };
+      in
+      mkRepoBinaryUpdater {
+        packages = packageVariants // {
+          default = packageVariants."rotate-squoosh-base";
         };
       }
     );

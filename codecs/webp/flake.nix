@@ -32,17 +32,19 @@
           };
         };
 
+        src = lib.sources.sourceByRegex ./. [
+          "Makefile"
+          "enc(/.+)?"
+          "dec(/.+)?"
+        ];
+
         builder =
           variantName:
           { simd }:
           {
             "webp-squoosh" = buildSquooshCppCodec {
               name = "webp-squoosh-${variantName}";
-              src = lib.sources.sourceByRegex ./. [
-                "Makefile"
-                "enc(/.+)?"
-                "dec(/.+)?"
-              ];
+              inherit src;
               nativeBuildInputs = [
                 pkgs.emscripten
                 self.packages.${system}."webp-${variantName}"

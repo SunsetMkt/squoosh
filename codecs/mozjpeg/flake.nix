@@ -28,13 +28,15 @@
           base = { };
         };
 
+        src = lib.sources.sourceByRegex ./. [
+          "Makefile"
+          "enc(/.+)?"
+        ];
+
         builder = variantName: opts: {
           mozjpeg-squoosh = buildSquooshCppCodec {
             name = "mozjpeg-squoosh";
-            src = lib.sources.sourceByRegex ./. [
-              "Makefile"
-              "enc(/.+)?"
-            ];
+            inherit src;
             MOZJPEG = self.packages.${system}."mozjpeg-${variantName}";
 
             dontConfigure = true;
