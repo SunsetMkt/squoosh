@@ -3,6 +3,9 @@
   fetchCrate,
   rustPlatform,
   curl,
+  stdenv,
+  openssl_1_1,
+  pkg-config,
   darwin,
 }:
 rec {
@@ -21,10 +24,15 @@ rec {
     rustPlatform.buildRustPackage {
       name = "wasm-bindgen-cli";
       inherit src cargoLock;
-      buildInputs = [
-        curl
-        darwin.apple_sdk.frameworks.Security
+      nativeBuildInputs = [
+        pkg-config
       ];
+      buildInputs = [
+        openssl_1_1
+      ] ++ lib.optionals stdenv.isDarwin [
+        darwin.apple_sdk.frameworks.IOKit
+      ];
+
       doCheck = false;
     };
 

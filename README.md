@@ -15,6 +15,8 @@ However, Squoosh utilizes Google Analytics to collect the following:
 
 # Developing
 
+## Web App
+
 To develop for Squoosh:
 
 1. Clone the repository
@@ -31,8 +33,28 @@ To develop for Squoosh:
    npm run dev
    ```
 
+## Codecs
+
+All build instructions for codecs are written using [Nix]. If you have Nix installed, you can rebuild the WebAssembly binaries by running:
+
+```sh
+# Build the codec
+cd codec/<codec>
+nix run '.#updateRepoBinaries'
+```
+
+If you do not have Nix installed, you can use the provided Docker image to create a shell with nix available:
+
+```sh
+# Build the image (only needs to be done once).
+docker build -t squoosh-nix ./nix
+docker run --name squoosh-nix -ti -v $PWD:/app squoosh-nix /bin/sh
+# ... continue with the steps above
+```
+
 # Contributing
 
 Squoosh is an open-source project that appreciates all community involvement. To contribute to the project, follow the [contribute guide](/CONTRIBUTING.md).
 
 [squoosh]: https://squoosh.app
+[nix]: https://nixos.org

@@ -2,7 +2,10 @@
   rustPlatform,
   jq,
   rsync,
+  lib,
   stdenv,
+  # openssl,
+  pkg-config,
   fenix,
 }:
 {
@@ -40,6 +43,11 @@
           toolchain
           jq
           rsync
+          pkg-config
+          # (lib.getDev openssl)
+        ];
+        buildInputs = [
+          # openssl
         ];
         dontConfigure = true;
         buildPhase = ''
